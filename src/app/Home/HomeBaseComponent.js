@@ -1,15 +1,10 @@
 import React, { PureComponent } from "react"
-import { View, Text, FlatList, ActivityIndicator } from "react-native"
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from "react-native"
 import { List, ListItem, SearchBar } from "react-native-elements"
 
-export class HomeScreen extends React.PureComponent {
+export class HomeBaseComponent extends React.PureComponent {
   constructor(props) {
     super(props)
-
-    this.constant = {
-    	baseUrl: "http://localhost:8080",
-    	firstPage: "/locations"
-    }
 
     this.state = {
       data: [],
@@ -19,7 +14,7 @@ export class HomeScreen extends React.PureComponent {
     this.logic = {
     	error: null,
     	loading: false,
-    	next: this.constant.firstPage
+    	next: this.props.firstPage
     }
   }
 
@@ -28,12 +23,12 @@ export class HomeScreen extends React.PureComponent {
   makeRemoteRequest = () => {
   	// Preconditions
   	if (this.logic.loading === true) { return }
-  	if (this.state.refreshing === true) { this.logic.next = this.constant.firstPage }
+  	if (this.state.refreshing === true) { this.logic.next = this.props.firstPage }
   	if (this.logic.next === null) { return }
 
   	// Start request
   	this.logic.loading = true
-    url = this.constant.baseUrl + this.logic.next
+    url = global.baseUrl + this.logic.next
     console.log("Request started: " + url)
 
     fetch(url)
@@ -115,6 +110,22 @@ export class HomeScreen extends React.PureComponent {
     return this.renderLoading()
   }
 
+  renderItem = ({ item }) => (
+    <TouchableOpacity onPress = { () => this.onPressItem(item) }>
+      <ListItem
+        //roundAvatar
+        title = { item.name }
+        subtitle = { item.name }
+        //avatar = {{ uri: item.picture.thumbnail }}
+        containerStyle = {{ borderBottomWidth: 0 }}
+      />
+    </TouchableOpacity>
+  )
+
+  onPressItem = (item) => {
+     this.props.navigation.navigate('Restaurant', { item: item })
+  }
+
   render() {
   	console.log("Render")
 
@@ -122,15 +133,7 @@ export class HomeScreen extends React.PureComponent {
 	    <FlatList style={{backgroundColor: 'white'}}
 	      data = { this.state.data }
 	      //extraData = { this.state }
-	      renderItem = {({ item }) => (
-	        <ListItem
-	          //roundAvatar
-	          title = { item.name }
-	          subtitle = { item.name }
-	          //avatar = {{ uri: item.picture.thumbnail }}
-	          containerStyle = {{ borderBottomWidth: 0 }}
-	        />
-	      )}
+	      renderItem = { this.renderItem }
 	      keyExtractor = { item => item.name }
 	      ItemSeparatorComponent = { this.renderSeparator }
 	      ListHeaderComponent = { this.renderSearchBar }

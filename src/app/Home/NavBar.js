@@ -1,11 +1,19 @@
 import React from 'react';
 import { AppRegistry } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-import { HomeScreen } from './HomeScreen';
+
+import { HomeBaseComponent } from './HomeBaseComponent';
+import { LocationsScreen } from './LocationsScreen';
 
 export const navBar = StackNavigator({
-  Home: { 
-  	screen: HomeScreen,
-  	navigationOptions: { title: 'Welcome' }
-  }
+  Locations: { 
+  	screen: LocationsScreen,
+  	navigationOptions: { title: 'Locations' }
+  },
+  Restaurant: {
+    screen: ({props, navigation}) => <HomeBaseComponent {...props} firstPage = {"/restaurants?locationid=" + navigation.state.params.item.id }/>,
+    navigationOptions: ({navigation}) => ({
+      title: `${navigation.state.params.item.name}`,
+    }),
+  },
 });
