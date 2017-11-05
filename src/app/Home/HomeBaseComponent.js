@@ -111,7 +111,7 @@ export class HomeBaseComponent extends React.PureComponent {
   }
 
   renderItem = ({ item }) => (
-    <TouchableOpacity onPress = { () => this.onPressItem(item) }>
+    <TouchableOpacity onPress = { () => this.props.onPressItem(item) }>
       <ListItem
         //roundAvatar
         title = { item.name }
@@ -121,10 +121,6 @@ export class HomeBaseComponent extends React.PureComponent {
       />
     </TouchableOpacity>
   )
-
-  onPressItem = (item) => {
-     this.props.navigation.navigate('Restaurant', { item: item })
-  }
 
   render() {
   	console.log("Render")
