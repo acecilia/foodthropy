@@ -138,7 +138,7 @@ export class HomeScreen extends React.PureComponent {
 	      onRefresh = { this.handleRefresh }
 	      refreshing = { this.state.refreshing }
 	      onEndReached = { this.handleLoadMore }
-	      onEndReachedThreshold = { 0 } // Usually usuer will use the search bar, not scroll. We just need some data to fill the view
+	      onEndReachedThreshold = { 0 } // Usually user will use the search bar, not scroll. We just need some data to fill the view
 	    />
     )
   }
