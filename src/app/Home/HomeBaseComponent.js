@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react"
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from "react-native"
-import { List, ListItem, SearchBar } from "react-native-elements"
+import { View, Text, FlatList, ActivityIndicator } from "react-native"
+import { List, SearchBar } from "react-native-elements"
 
 export class HomeBaseComponent extends React.PureComponent {
   constructor(props) {
@@ -68,8 +68,7 @@ export class HomeBaseComponent extends React.PureComponent {
     return (
 	    <View style = {{ 
 	    	height: 1, 
-	    	width: "86%", 
-	    	backgroundColor: "#CED0CE", marginLeft: "14%" 
+	    	backgroundColor: "#CED0CE", marginLeft: "5%" 
 	    }}/>
     )
   }
@@ -110,18 +109,6 @@ export class HomeBaseComponent extends React.PureComponent {
     return this.renderLoading()
   }
 
-  renderItem = ({ item }) => (
-    <TouchableOpacity onPress = { () => this.props.onPressItem(item) }>
-      <ListItem
-        //roundAvatar
-        title = { item.name }
-        subtitle = { item.name }
-        //avatar = {{ uri: item.picture.thumbnail }}
-        containerStyle = {{ borderBottomWidth: 0 }}
-      />
-    </TouchableOpacity>
-  )
-
   render() {
   	console.log("Render")
 
@@ -129,7 +116,7 @@ export class HomeBaseComponent extends React.PureComponent {
 	    <FlatList style={{backgroundColor: 'white'}}
 	      data = { this.state.data }
 	      //extraData = { this.state }
-	      renderItem = { this.renderItem }
+	      renderItem = { this.props.renderItem }
 	      keyExtractor = { item => item.name }
 	      ItemSeparatorComponent = { this.renderSeparator }
 	      ListHeaderComponent = { this.renderSearchBar }
