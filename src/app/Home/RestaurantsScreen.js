@@ -29,7 +29,7 @@ export class RestaurantsScreen extends HomeBaseComponent {
 
   render() {
     return <HomeBaseComponent 
-      {...this.props} 
+      { ...this.props } 
       firstPage = { "/restaurants?locationid=" + this.props.locationId }
       renderItem = { ({item}) => (
 	      <ListItem

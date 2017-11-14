@@ -8,7 +8,7 @@ import { ListItem } from "react-native-elements";
 export class LocationsScreen extends HomeBaseComponent {
   render() {
     return <HomeBaseComponent 
-      {...this.props} 
+      { ...this.props } 
       firstPage = "/locations" 
       renderItem = { ({item}) => (
         <TouchableOpacity onPress = { () => this.props.onPressItem(item) }>
