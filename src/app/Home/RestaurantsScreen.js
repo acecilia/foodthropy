@@ -32,6 +32,28 @@ export class RestaurantsScreen extends HomeBaseComponent {
     });
   };
 
+  likePressed = (item, button) => {
+    const isSelected = !button.state.isSelected;
+
+    // Update the UI instantly
+    button.setSelectionState(isSelected);
+
+    // Sync with the server
+    this.makeRemoteRequest(item.id, isSelected)
+      .then(res => {
+        // Like was added to the server, now update local database
+        FavouriteStorage.storeId(item.id, isSelected);
+      })
+      .catch(error => {
+        Alert.alert(
+          "Ups! Something went wrong and we could not receive your like!",
+          "Some tips: check that you have internet connection, or try later ;P"
+        );
+        // Rollback UI update
+        button.setSelectionState(!isSelected);
+      });
+  };
+
   renderRightIcon = item => {
     return (
       <View
@@ -46,21 +68,7 @@ export class RestaurantsScreen extends HomeBaseComponent {
         <BouncingButton
           getinitialIsSelected={FavouriteStorage.getValueForId(item.id)}
           buttonPressed={button => {
-            const isSelected = !button.state.isSelected;
-            button.setSelectionState(isSelected);
-
-            this.makeRemoteRequest(item.id, isSelected)
-              .then(res => {
-                // Like was added to the server
-                FavouriteStorage.storeId(item.id, isSelected);
-              })
-              .catch(error => {
-                Alert.alert(
-                  "Ups! Something went wrong and we could not receive your like!",
-                  "Some tips: check that you have internet connection, or try later ;P"
-                );
-                button.setSelectionState(!isSelected);
-              });
+            this.likePressed(item, button);
           }}
         />
       </View>
