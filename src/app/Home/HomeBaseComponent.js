@@ -113,7 +113,7 @@ export class HomeBaseComponent extends React.PureComponent {
   	console.log("Render")
 
     return (
-	    <FlatList style={{backgroundColor: 'white'}}
+	    <FlatList style = {{ backgroundColor: 'white' }}
 	      data = { this.state.data }
 	      //extraData = { this.state }
 	      renderItem = { this.props.renderItem }

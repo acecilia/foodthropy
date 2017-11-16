@@ -1,30 +1,21 @@
 
 import React from 'react';
 import { HomeBaseComponent } from './HomeBaseComponent';
-// For renderItem
-import { View, TouchableOpacity } from "react-native";
-import { ListItem, Button } from "react-native-elements";
-import Icon from 'react-native-vector-icons/Ionicons';
+
+// Favourite button related
+import { ListItem } from "react-native-elements";
+import { BouncingButton } from './BouncingButton';
+import FavouriteStorage from './FavouriteStorage';
+
 
 export class RestaurantsScreen extends HomeBaseComponent {
-
-	renderRightIcon = () => {
-		return <View
-			style= {{
-				backgroundColor: 'skyblue',
-				flex: 1, 
-				flexGrow: 0,
-	    	flexDirection: 'row', 
-	    	justifyContent: 'flex-end',
-	    	alignItems: 'center'
+	renderRightIcon = (item) => {
+		return <BouncingButton 
+			getinitialIsSelected = { FavouriteStorage.getValueForId(item.id) }
+			onSelectionChange = { (isSelected) => {
+				FavouriteStorage.storeId(item.id, isSelected)
 			}}
-		>
-			<Icon 
-		    name = "md-heart" 
-		    size = { 30 } 
-		    color = "red"
-  		/>
-  	</View>
+		/>
   }
 
   render() {
@@ -33,19 +24,10 @@ export class RestaurantsScreen extends HomeBaseComponent {
       firstPage = { "/restaurants?locationid=" + this.props.locationId }
       renderItem = { ({item}) => (
 	      <ListItem
-	        //roundAvatar
 	        title = { item.name }
-	        subtitle = { item.name }
-	        rightIcon = { this.renderRightIcon() }
-	        onPressRightIcon = { this.renderLikeButton }
+	        subtitle = { item.id }
+	        rightIcon = { this.renderRightIcon(item) }
 	        containerStyle = {{ borderBottomWidth: 0 }}
-	        badge = {{ value: 3, textStyle: { color: 'white' }, containerStyle: { 
-	        	backgroundColor: 'deepskyblue', 
-	        },
-	        style: { flex:1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }
-
-	      }}
-	        // avatar = { require('../images/avatar1.jpg') }
 	      />
       )}
     />
