@@ -1,1 +1,1 @@
-global.baseUrl = "http://localhost:8080" 
+global.baseUrl = "http://localhost:8080";
