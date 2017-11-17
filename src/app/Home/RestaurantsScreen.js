@@ -20,7 +20,6 @@ export class RestaurantsScreen extends HomeBaseComponent {
         renderItem={({ item }) => (
           <ListItem
             title={item.name}
-            subtitle={item.id}
             rightIcon={<RestaurantCellRightComponent item= {item}/>}
             containerStyle={{ borderBottomWidth: 0 }}
           />
