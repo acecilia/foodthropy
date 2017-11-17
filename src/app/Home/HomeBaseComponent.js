@@ -110,7 +110,7 @@ export class HomeBaseComponent extends React.PureComponent {
   renderSearchBar = () => {
     return (
       <SearchBar
-        backgroundColor="transparent"
+        backgroundColor={0}
         inputStyle={{ color: "white" }}
         placeholderStyle={{ borderWidth: 1, backgroundColor: "#fff" }}
         placeholder="Search"
