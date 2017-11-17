@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { View, Text, FlatList, ActivityIndicator } from "react-native";
 import { List, SearchBar } from "react-native-elements";
 import _ from "lodash";
-import queryString from "query-string";
+import QueryString from "query-string";
 
 export class HomeBaseComponent extends React.PureComponent {
   constructor(props) {
@@ -31,11 +31,15 @@ export class HomeBaseComponent extends React.PureComponent {
       return;
     }
     if (this.state.refreshing === true) {
-      const query = { ... this.logic.urlQuery };
-      if (nameFilter !== undefined && nameFilter.length > 0) {
-        query.nameFilter = nameFilter;
+      const query = { ...this.logic.urlQuery };
+      if (this.logic.searchText.length > 0) {
+        query.nameFilter = this.logic.searchText;
       }
-      this.logic.next = this.logic.urlRoot + "?" + queryString.stringify(query);
+      const queryString = ""
+      if (Object.keys(query).length > 0) {
+        queryString = "?" + QueryString.stringify(query)
+      }
+      this.logic.next = this.logic.urlRoot + queryString;
     }
     if (this.logic.next === null) {
       return;
@@ -100,7 +104,7 @@ export class HomeBaseComponent extends React.PureComponent {
 
   onchangeText = text => {
     this.logic.searchText = text;
-    this.handleRefreshDebounced()
+    this.handleRefreshDebounced();
   };
 
   renderSearchBar = () => {
@@ -116,36 +120,61 @@ export class HomeBaseComponent extends React.PureComponent {
     );
   };
 
-  renderLoading = () => {
+  loadingView = (
+    <View
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        height: 100
+      }}
+    >
+      <ActivityIndicator animating size="large" />
+    </View>
+  );
+
+  renderTextView = text => {
     return (
-      <View style={{ paddingVertical: 20 }}>
-        <ActivityIndicator animating size="large" />
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 100
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 20,
+            color: "gray",
+            textAlign: "center"
+          }}
+        >
+          {text}
+        </Text>
       </View>
     );
   };
 
-  renderEmpty = () => {
-    return <Text>"Empty"</Text>;
-  };
-
-  renderError = () => {
-    return <Text>Error</Text>;
-  };
+  errorView = this.renderTextView("Uh, an error occurred :(");
+  emptyView = this.renderTextView("Ooops, the list is empty!");
 
   renderFooter = () => {
     if (this.logic.next === null) {
       if (this.state.data.length === 0) {
-        return this.renderEmpty();
+        return this.emptyView;
       } else {
         return null;
       }
     }
 
     if (this.logic.error && this.state.data.length === 0) {
-      return this.renderError();
+      return this.errorView;
     }
 
-    return this.renderLoading();
+    return this.loadingView;
   };
 
   render() {
