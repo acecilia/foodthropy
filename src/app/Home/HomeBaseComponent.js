@@ -1,6 +1,8 @@
 import React, { PureComponent } from "react";
 import { View, Text, FlatList, ActivityIndicator } from "react-native";
 import { List, SearchBar } from "react-native-elements";
+import _ from "lodash";
+import queryString from "query-string";
 
 export class HomeBaseComponent extends React.PureComponent {
   constructor(props) {
@@ -8,25 +10,32 @@ export class HomeBaseComponent extends React.PureComponent {
 
     this.state = {
       data: [],
-      refreshing: false
+      refreshing: true
     };
 
     this.logic = {
       error: null,
       loading: false,
-      next: this.props.firstPage
+      next: "",
+      urlRoot: this.props.urlRoot,
+      urlQuery: this.props.urlQuery === undefined ? {} : this.props.urlQuery,
+      searchText: ""
     };
   }
 
   componentDidMount() {}
 
-  makeRemoteRequest = () => {
+  makeRemoteRequest = nameFilter => {
     // Preconditions
     if (this.logic.loading === true) {
       return;
     }
     if (this.state.refreshing === true) {
-      this.logic.next = this.props.firstPage;
+      const query = { ... this.logic.urlQuery };
+      if (nameFilter !== undefined && nameFilter.length > 0) {
+        query.nameFilter = nameFilter;
+      }
+      this.logic.next = this.logic.urlRoot + "?" + queryString.stringify(query);
     }
     if (this.logic.next === null) {
       return;
@@ -63,9 +72,9 @@ export class HomeBaseComponent extends React.PureComponent {
       });
   };
 
-  handleRefresh = () => {
+  handleRefresh = nameFilter => {
     this.setState({ refreshing: true }, () => {
-      this.makeRemoteRequest();
+      this.makeRemoteRequest(nameFilter);
     });
   };
 
@@ -85,8 +94,26 @@ export class HomeBaseComponent extends React.PureComponent {
     );
   };
 
+  handleRefreshDebounced = _.debounce(() => {
+    this.handleRefresh(this.logic.searchText);
+  }, 300);
+
+  onchangeText = text => {
+    this.logic.searchText = text;
+    this.handleRefreshDebounced()
+  };
+
   renderSearchBar = () => {
-    return <SearchBar placeholder="Type Here..." lightTheme round />;
+    return (
+      <SearchBar
+        backgroundColor="transparent"
+        inputStyle={{ color: "white" }}
+        placeholderStyle={{ borderWidth: 1, backgroundColor: "#fff" }}
+        placeholder="Search"
+        clearIcon={{ name: "clear" }}
+        onChangeText={this.onchangeText}
+      />
+    );
   };
 
   renderLoading = () => {
@@ -128,14 +155,13 @@ export class HomeBaseComponent extends React.PureComponent {
       <FlatList
         style={{ backgroundColor: "white" }}
         data={this.state.data}
-        //extraData = { this.state }
         renderItem={this.props.renderItem}
         keyExtractor={item => item.name}
         ItemSeparatorComponent={this.renderSeparator}
         ListHeaderComponent={this.renderSearchBar}
         ListFooterComponent={this.renderFooter}
         onRefresh={this.handleRefresh}
-        refreshing={this.state.refreshing}
+        refreshing={false}
         onEndReached={this.handleLoadMore}
         onEndReachedThreshold={0} // Usually user will use the search bar, not scroll. We just need some data to fill the view
       />

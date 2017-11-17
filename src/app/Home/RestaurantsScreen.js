@@ -3,88 +3,25 @@ import { HomeBaseComponent } from "./HomeBaseComponent";
 
 // Favourite button related
 import { View, Alert } from "react-native";
-import { ListItem } from "react-native-elements";
+import { ListItem, Badge } from "react-native-elements";
 import { BouncingButton } from "./BouncingButton";
+import { RestaurantCellRightComponent } from "./RestaurantCellRightComponent";
+
 import FavouriteStorage from "./FavouriteStorage";
 
+
 export class RestaurantsScreen extends HomeBaseComponent {
-  makeRemoteRequest = async (id, isFavourite) => {
-    // Start request
-    url = global.baseUrl + "/restaurants/" + id;
-
-    return fetch(url, {
-      method: "PATCH",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        like: isFavourite
-      })
-    }).then(res => {
-      if (res.status != 200) {
-        var error = new Error(res.status);
-        error.response = res;
-        return Promise.reject(error);
-      } else {
-        return Promise.resolve(res);
-      }
-    });
-  };
-
-  likePressed = (item, button) => {
-    const isSelected = !button.state.isSelected;
-
-    // Update the UI instantly
-    button.setSelectionState(isSelected);
-
-    // Sync with the server
-    this.makeRemoteRequest(item.id, isSelected)
-      .then(res => {
-        // Like was added to the server, now update local database
-        FavouriteStorage.storeId(item.id, isSelected);
-      })
-      .catch(error => {
-        Alert.alert(
-          "Ups! Something went wrong and we could not receive your like!",
-          "Some tips: check that you have internet connection, or try later ;P"
-        );
-        // Rollback UI update
-        button.setSelectionState(!isSelected);
-      });
-  };
-
-  renderRightIcon = item => {
-    return (
-      <View
-        style={{
-          flex: 1,
-          flexGrow: 0.1,
-          flexDirection: "row",
-          justifyContent: "flex-end",
-          alignItems: "center"
-        }}
-      >
-        <BouncingButton
-          getinitialIsSelected={FavouriteStorage.getValueForId(item.id)}
-          buttonPressed={button => {
-            this.likePressed(item, button);
-          }}
-        />
-      </View>
-    );
-  };
-
   render() {
     return (
       <HomeBaseComponent
         {...this.props}
-        firstPage={"/restaurants?locationid=" + this.props.locationId}
+        urlRoot={"/restaurants"}
+        urlQuery={{locationid: this.props.locationId}}
         renderItem={({ item }) => (
           <ListItem
             title={item.name}
             subtitle={item.id}
-            rightIcon={this.renderRightIcon(item)}
+            rightIcon={<RestaurantCellRightComponent item= {item}/>}
             containerStyle={{ borderBottomWidth: 0 }}
           />
         )}

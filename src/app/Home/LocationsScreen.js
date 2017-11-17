@@ -9,7 +9,7 @@ export class LocationsScreen extends HomeBaseComponent {
     return (
       <HomeBaseComponent
         {...this.props}
-        firstPage="/locations"
+        urlRoot="/locations"
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => this.props.onPressItem(item)}>
             <ListItem

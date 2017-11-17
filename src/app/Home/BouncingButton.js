@@ -25,7 +25,12 @@ export class BouncingButton extends React.PureComponent {
 
 	render() {
 		return (
-			<TouchableOpacity onPress={ () => {this.props.buttonPressed(this)}}>
+			<TouchableOpacity
+				style={this.props.style}
+				onPress={() => {
+					this.props.buttonPressed(this);
+				}}
+			>
 				<Icon
 					name={
 						this.state.isSelected ? "md-heart" : "md-heart-outline"

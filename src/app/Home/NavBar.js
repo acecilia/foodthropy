@@ -5,7 +5,7 @@ import { StackNavigator } from "react-navigation";
 import { LocationsScreen } from "./LocationsScreen";
 import { RestaurantsScreen } from "./RestaurantsScreen";
 
-export const navBar = StackNavigator({
+const navBar = StackNavigator({
   Locations: {
     screen: ({ props, navigation }) => (
       <LocationsScreen
@@ -31,3 +31,6 @@ export const navBar = StackNavigator({
     })
   }
 });
+
+AppRegistry.registerComponent("foodthropy", () => navBar);
+
